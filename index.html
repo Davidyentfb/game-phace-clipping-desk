@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Clipping Desk — Editor Information</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ec; --bg2:#f3ecd9; --ink:#17130a; --muted:#5c5340; --line:#ddd0ae;
+    --card:#fffdf7; --card2:#17130a; --gold:#8a6d12; --gold-bright:#b8911e; --gold-bg:#f5e6b8;
+    --green:#1d6b3a; --red:#9b2c1e; --radius:18px;
+    --shadow:0 18px 40px rgba(23,19,10,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0d0b07; --bg2:#14100a; --ink:#f4ecd6; --muted:#b8ab8a; --line:#322a18;
+      --card:#1a160e; --card2:#f4ecd6; --gold:#e2bc3f; --gold-bright:#f0cd5a; --gold-bg:#2b2210;
+      --green:#6fd598; --red:#ff9a8a; --shadow:0 18px 40px rgba(0,0,0,.45);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important; animation:none!important} }
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  button,[role="button"],select,summary,input{ min-height:44px }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  /* HERO */
+  .hero{padding:42px 0 28px;border-bottom:1px solid var(--line);background:
+    radial-gradient(700px 320px at 90% -10%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 65%),
+    var(--bg)}
+  .eyebrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .eyebrow span{border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:var(--card)}
+  .eyebrow span.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  h1{font-size:clamp(2.4rem,6.5vw,4.6rem);line-height:.95;letter-spacing:-.04em;margin:18px 0 16px;font-weight:900;max-width:14ch}
+  h1 em{font-style:normal;color:var(--gold)}
+  .lead{font-size:clamp(1.05rem,2vw,1.3rem);color:var(--muted);max-width:62ch;margin:0}
+  .lead strong{color:var(--ink)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:start;margin-top:8px}
+  @media(max-width:820px){.hero-grid{grid-template-columns:1fr}}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:999px;font-weight:700;text-decoration:none;border:1px solid var(--ink);font-size:.95rem;min-height:48px}
+  .btn.primary{background:var(--ink);color:var(--bg)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  /* Tally card - the proof */
+  .tally{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+  .tally-head{display:flex;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px dashed var(--line);align-items:center}
+  .tally-head b{font-size:.9rem;letter-spacing:.06em;text-transform:uppercase}
+  .tally-head span{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--muted)}
+  .tally table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .tally th,.tally td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  .tally th{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .tally td:last-child,.tally th:last-child{text-align:right;font-family:"IBM Plex Mono",monospace}
+  .tally tr:last-child td{border-bottom:none;font-weight:700;background:var(--gold-bg)}
+  .pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+  .pill.ok{background:color-mix(in srgb, var(--green) 16%, transparent);color:var(--green)}
+  .pill.pend{background:var(--gold-bg);color:var(--gold)}
+  .tally-foot{padding:12px 18px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line)}
+  /* Stats strip */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:28px 0 6px}
+  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--card);padding:18px}
+  .stat b{display:block;font-size:1.55rem;letter-spacing:-.03em;line-height:1}
+  .stat span{display:block;margin-top:6px;font-size:.84rem;color:var(--muted);line-height:1.4}
+  /* Sections */
+  section{padding:44px 0}
+  section + section{border-top:1px solid var(--line)}
+  h2{font-size:clamp(1.7rem,3.5vw,2.5rem);line-height:1.05;letter-spacing:-.03em;margin:0 0 10px;font-weight:850}
+  .sub{color:var(--muted);max-width:68ch;margin:0 0 24px;font-size:1.02rem}
+  .kicker{font-family:"IBM Plex Mono",monospace;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+  /* Value rows */
+  .values{display:grid;gap:14px}
+  .value{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  @media(max-width:640px){.value{grid-template-columns:44px 1fr}.value .tag{grid-column:2}}
+  .num{width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .value h3{margin:2px 0 6px;font-size:1.12rem;letter-spacing:-.01em}
+  .value p{margin:0;color:var(--muted);font-size:.96rem}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);padding:6px 9px;border-radius:999px;white-space:nowrap;color:var(--muted)}
+  /* Calculator */
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:820px){.calc{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+  .panel.dark{background:var(--card2);color:var(--bg);border-color:var(--card2)}
+  @media (prefers-color-scheme: dark){ .panel.dark{background:#f4ecd6;color:#17130a} }
+  @media (prefers-color-scheme: light){ .panel.dark{background:#17130a;color:#faf6ec} }
+  label{font-weight:700;font-size:.9rem;display:flex;justify-content:space-between;gap:12px;margin:18px 0 6px}
+  label output{font-family:"IBM Plex Mono",monospace;color:var(--gold)}
+  input[type=range]{width:100%;accent-color:var(--gold-bright);min-height:36px;padding:0}
+  .hint{font-size:.82rem;color:var(--muted);margin:4px 0 0}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  .tier-btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 8px;font-weight:700;cursor:pointer;font-family:Archivo,sans-serif;font-size:.9rem}
+  .tier-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .big-pay{font-size:clamp(2.6rem,6vw,4rem);font-weight:900;letter-spacing:-.05em;line-height:1;margin:8px 0 4px}
+  .pay-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed color-mix(in srgb, currentColor 22%, transparent);font-size:.95rem}
+  .pay-line:last-of-type{border-bottom:none}
+  .pay-line span:last-child{font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .disc{font-size:.8rem;opacity:.75;margin-top:14px;line-height:1.5}
+  /* Journey */
+  .journey-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .jbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:Archivo,sans-serif;min-height:44px}
+  .jbtn[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#17130a}
+  .journey-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;grid-template-columns:auto 1fr;gap:20px}
+  @media(max-width:600px){.journey-card{grid-template-columns:1fr}}
+  .journey-card .when{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.4rem;color:var(--gold);white-space:nowrap}
+  .journey-card h3{margin:0 0 6px;font-size:1.25rem}
+  .journey-card p{margin:0;color:var(--muted)}
+  /* Two lanes */
+  .lanes{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
+  @media(max-width:760px){.lanes{grid-template-columns:1fr}.lanes .plus{transform:rotate(90deg);margin:0 auto}}
+  .lane{border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--card)}
+  .lane h3{margin:0 0 8px}
+  .lane ul{margin:0;padding-left:18px;color:var(--muted)}
+  .lane li{margin:6px 0}
+  .plus{align-self:center;width:44px;height:44px;border-radius:50%;background:var(--gold);color:#17130a;display:grid;place-items:center;font-weight:900;font-size:1.3rem}
+  .lane-out{margin-top:14px;text-align:center;background:var(--gold-bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-weight:700}
+  /* Brief anatomy */
+  .brief{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+  .brief-top{background:var(--ink);color:var(--bg);padding:16px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+  .brief-top b{letter-spacing:.04em}
+  .brief-top span{font-family:"IBM Plex Mono",monospace;font-size:.82rem;opacity:.8}
+  .brief-grid{display:grid;grid-template-columns:1fr 1fr}
+  @media(max-width:700px){.brief-grid{grid-template-columns:1fr}}
+  .brief-cell{padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  .brief-cell h4{margin:0 0 5px;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+  .brief-cell p{margin:0;font-size:.95rem;color:var(--muted)}
+  .brief-cell p strong{color:var(--ink)}
+  .distinct{grid-column:1/-1;background:var(--gold-bg);border-right:none}
+  /* Tier road */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.road{grid-template-columns:1fr}}
+  .road-card{border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--card);position:relative}
+  .road-card.featured{border:2px solid var(--gold)}
+  .road-card h3{margin:8px 0 6px;font-size:1.2rem}
+  .road-card p,.road-card li{color:var(--muted);font-size:.94rem}
+  .road-card ul{padding-left:18px;margin:8px 0 0}
+  .road-card li{margin:5px 0}
+  /* Counts */
+  .counts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.counts{grid-template-columns:1fr}}
+  .count-box{border-radius:18px;padding:20px;border:1px solid var(--line);background:var(--card)}
+  .count-box h3{margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .count-box ul{margin:0;padding-left:18px;color:var(--muted)}
+  .count-box li{margin:7px 0}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  /* Checklist + FAQ */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media(max-width:820px){.two{grid-template-columns:1fr}}
+  .check{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .check li{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;align-items:flex-start}
+  .check .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--gold);flex:none;margin-top:2px;position:relative}
+  .check li p{margin:0;font-size:.95rem}
+  .check li p span{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
+  details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+  summary{cursor:pointer;padding:16px 18px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;min-height:52px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:1.3rem;color:var(--gold);font-weight:400}
+  details[open ] summary::after{content:"−"}
+  details .ans{padding:0 18px 16px;color:var(--muted);font-size:.95rem}
+  details .ans p{margin:0}
+  /* Final */
+  .final{background:var(--ink);color:var(--bg);border-radius:24px;padding:30px;margin:10px 0 40px}
+  .final h2{color:var(--bg)}
+  .final p{color:color-mix(in srgb, var(--bg) 72%, transparent);max-width:62ch}
+  .final .btn{background:var(--gold);border-color:var(--gold);color:#17130a}
+  footer{padding:22px 0 36px;color:var(--muted);font-size:.84rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow"><span class="solid">Clipping Desk · Game Phace Ent</span><span>For Editors &amp; Clippers</span><span>First cohort · Small by design</span></div>
+        <h1>Your cuts. Your account. <em>Paid for every view they actually earn.</em></h1>
+        <p class="lead">Clipping Desk is run by <strong>Game Phace Ent</strong>. No hunting for clients. No chasing screenshots to prove a count. You receive a brief, cut it <strong>your way</strong>, post it from <strong>your own account</strong> — and you are paid <strong>per verified view</strong>, tallied in a weekly ledger you can check against your own links.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSf4E6KTHXENUFCFg2ZTAKdNjy4Zlw200z-vJzVlzHeVTRrSHA/viewform" target="_blank" rel="noopener">Apply as an editor →</a>
+          <a class="btn ghost" href="#calculator">See what your views are worth ↓</a>
+          <a class="btn ghost" href="https://docs.google.com/forms/d/e/1FAIpQLSfiW5c_EV2jHQ47dUQDa7t0aVep1M8ZFbe9GU9LMuI1YLchOQ/viewform" target="_blank" rel="noopener">Commission clips — client intake</a>
+        </div>
+      </div>
+
+      <aside class="tally" aria-label="Example of a weekly tally row">
+        <div class="tally-head"><b>Weekly tally — how pay is proven</b><span>ONE ROW PER CLIP</span></div>
+        <table>
+          <thead><tr><th>Checkpoint</th><th>Status</th><th>Views</th></tr></thead>
+          <tbody>
+            <tr><td>Posted — link submitted same day</td><td><span class="pill ok">Logged</span></td><td>—</td></tr>
+            <tr><td>48 hours — early signal read by the desk</td><td><span class="pill ok">Read</span></td><td>from platform</td></tr>
+            <tr><td>7 days — the payable count</td><td><span class="pill ok">Verified</span></td><td>payable</td></tr>
+            <tr><td>Duplicate check — file hash-checked</td><td><span class="pill ok">Clear</span></td><td>✓</td></tr>
+            <tr><td>Weekly ledger → paid on approval</td><td><span class="pill pend">Weekly</span></td><td>Amount due</td></tr>
+          </tbody>
+        </table>
+        <div class="tally-foot">Every count is read from your submitted post link — never from a screenshot, never from your word against theirs. <strong>Evidence, not claims.</strong></div>
+      </aside>
+    </div>
+
+    <div class="stats" aria-label="How the desk works at a glance">
+      <div class="stat"><b>$0.20 / $0.25 / $0.35</b><span>Settled rate card per 1,000 verified views — Entry $0.20 · Established $0.25 · Anchor $0.35.</span></div>
+      <div class="stat"><b>2 lanes</b><span>Briefs come from Game Phace Ent's own shows <em>and</em> client campaigns — supply does not depend on one season.</span></div>
+      <div class="stat"><b>48h + 7d</b><span>Two fixed checkpoints. The 7-day count is the one you are paid on.</span></div>
+      <div class="stat"><b>Weekly</b><span>One ledger, every week. Check it against your own links, line by line.</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- VALUE -->
+  <section aria-labelledby="why-h">
+    <div class="kicker">Why editors do this work</div>
+    <h2 id="why-h">The work you already do — minus everything that wastes your time</h2>
+    <p class="sub">Most clipping work fails editors in the same four places: no steady supply, vague pay, counts you have to argue for, and rules you only learn after your account is hurt. This desk is built to remove all four.</p>
+    <div class="values">
+      <article class="value"><div class="num">01</div><div><h3>Steady briefs, not one campaign and silence</h3><p>Two supplies feed one desk: Game Phace Ent's own long-form — podcast, Briefing rooms, teaching — and client campaigns taken in under written rights grants. When one lane is quiet, the other still issues briefs.</p></div><span class="tag">Dual-lane supply</span></article>
+      <article class="value"><div class="num">02</div><div><h3>Your edit stays yours</h3><p>A brief gives you the source, the moment, the hook line, and the window. The cut — pacing, framing, caption voice — is yours. No two editors on the same source receive the same brief, and no clip is ever a copy of another editor's.</p></div><span class="tag">Your angle, reserved</span></article>
+      <article class="value"><div class="num">03</div><div><h3>You never argue for a count</h3><p>The desk reads your views itself, from your post link, at 48 hours and 7 days. You submit the link the day you post and you are done. No screenshots to send, no dashboard to defend, no messages chasing a number.</p></div><span class="tag">Desk reads the count</span></article>
+      <article class="value"><div class="num">04</div><div><h3>Rules that protect your account, not just the campaign</h3><p>Identical reposting is the practice that gets accounts stripped of distribution. It is prohibited here by design — so the work you do on this desk never asks you to risk the account you built.</p></div><span class="tag">Built to last</span></article>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section id="calculator" aria-labelledby="calc-h">
+    <div class="kicker">Do the maths yourself</div>
+    <h2 id="calc-h">What are your views worth?</h2>
+    <p class="sub">Drag the sliders to your real numbers — the views your clips actually pull, and how many briefs you could cut in a week. The maths is the desk's maths: <span class="mono">verified views ÷ 1,000 × your tier rate</span>. The settled card is Entry <strong>$0.20</strong> · Established <strong>$0.25</strong> · Anchor <strong>$0.35</strong> per 1,000 verified views.</p>
+    <div class="calc">
+      <div class="panel">
+        <label for="views">Verified views per clip <output id="viewsOut">50,000</output></label>
+        <input type="range" id="views" min="5000" max="500000" step="5000" value="50000">
+        <p class="hint">Use your honest average — the 7-day count, not the first-day spike.</p>
+
+        <label for="clips">Clips you post per week <output id="clipsOut">5 clips</output></label>
+        <input type="range" id="clips" min="1" max="20" step="1" value="5">
+        <p class="hint">Set this to your real capacity. Briefs are issued against the capacity you declare.</p>
+
+        <label for="rate">Rate per 1,000 verified views — Entry tier (Tier 1) <output id="rateOut">$0.20 — Entry</output></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="mono" style="font-weight:600;color:var(--muted)">$</span>
+          <input type="number" id="rate" min="0" step="0.01" value="0.20" placeholder="0.20" inputmode="decimal" style="flex:1;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:1rem;min-height:48px">
+        </div>
+        <p class="hint">Defaults to the settled Entry rate of $0.20. The full card is Entry $0.20 · Established $0.25 · Anchor $0.35 per 1,000 verified views. Change the figure to $0.25 or $0.35 to see the other tiers — the field stays editable so you can test the maths at your tier.</p>
+      </div>
+
+      <div class="panel dark" aria-live="polite">
+        <div class="mono" style="font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7">Your week, at those numbers — Entry tier</div>
+        <div class="big-pay" id="weekPay">—</div>
+        <div style="opacity:.8;font-size:.95rem" id="weekPayNote">At the Entry rate of $0.20 per 1,000 verified views.</div>
+        <div style="margin-top:18px">
+          <div class="pay-line"><span>Views per clip</span><span id="lineViews">50,000</span></div>
+          <div class="pay-line"><span>Thousands per clip</span><span id="lineK">50 × your rate</span></div>
+          <div class="pay-line"><span>Pay per clip</span><span id="linePerClip">—</span></div>
+          <div class="pay-line"><span>Total verified views / week</span><span id="lineTotalViews">250,000</span></div>
+          <div class="pay-line"><span>Four weeks at the same pace</span><span id="lineMonth">—</span></div>
+        </div>
+        <p class="disc">This is an illustration at the rate shown, not a guarantee of earnings. Real pay is computed clip by clip from verified 7-day views at your tier's settled rate — Entry $0.20, Established $0.25, Anchor $0.35 per 1,000 verified views — in the weekly ledger, and released on approval. One clip that travels can outweigh a week of averages — and a clip that does not travel is paid on exactly what it earned, no more, no less.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEEK JOURNEY -->
+  <section aria-labelledby="week-h">
+    <div class="kicker">From brief to paid</div>
+    <h2 id="week-h">One clip, start to finish</h2>
+    <p class="sub">Tap each step. Notice what is <em>not</em> on your side of it: no client to find, no count to prove, no invoice to chase.</p>
+    <div class="journey-btns" role="group" aria-label="Journey steps">
+      <button class="jbtn" data-step="0" aria-pressed="true">1 · The brief lands</button>
+      <button class="jbtn" data-step="1" aria-pressed="false">2 · You cut it your way</button>
+      <button class="jbtn" data-step="2" aria-pressed="false">3 · You post &amp; submit</button>
+      <button class="jbtn" data-step="3" aria-pressed="false">4 · 48 hours</button>
+      <button class="jbtn" data-step="4" aria-pressed="false">5 · 7 days — verified</button>
+      <button class="jbtn" data-step="5" aria-pressed="false">6 · Ledger &amp; pay</button>
+    </div>
+    <div class="journey-card">
+      <div class="when" id="jWhen">DAY 0</div>
+      <div><h3 id="jTitle">Everything you need is in one brief</h3><p id="jBody">Source and link, the exact timestamp range, the hook line, required caption elements and disclosure, the call-to-action keyword, platform and format, and your posting window. One section names what makes <em>your</em> clip distinct — the angle reserved to you alone on that source.</p></div>
+    </div>
+  </section>
+
+  <!-- BRIEF ANATOMY -->
+  <section aria-labelledby="brief-h">
+    <div class="kicker">No guesswork</div>
+    <h2 id="brief-h">What a brief actually contains</h2>
+    <p class="sub">This is the shape of every brief — the same fields, every time, so you can start cutting in minutes instead of decoding a vague message.</p>
+    <div class="brief">
+      <div class="brief-top"><b>CLIP BRIEF</b><span>Brief # PILOT-___-E__ · One brief per clip, per editor</span></div>
+      <div class="brief-grid">
+        <div class="brief-cell"><h4>The source</h4><p><strong>Full title + link</strong>, who is speaking, and the rights-record reference. No rights record, no clipping — a brief with that field blank is not to be worked.</p></div>
+        <div class="brief-cell"><h4>The cut</h4><p><strong>Timestamp range + the moment in one line</strong> + the exact hook line the clip must lead with. You may tighten inside the range; you do not extend outside it without asking.</p></div>
+        <div class="brief-cell"><h4>Caption &amp; disclosure</h4><p>What the caption <strong>must include</strong>, what it <strong>must not include</strong>, hashtags, and the paid-work disclosure wording in the platform's required form.</p></div>
+        <div class="brief-cell"><h4>Format &amp; window</h4><p><strong>Platform, vertical 9:16, length band</strong>, caption style, reference clips that set the quality bar — and your posting window and deadline.</p></div>
+        <div class="brief-cell distinct"><h4>§ What makes this clip distinct — yours alone</h4><p>The specific angle reserved to you: the hook treatment, framing, caption voice, or part of the range you emphasise. Every other editor on the same source holds a <strong>different</strong> angle. If your finished edit starts converging on another editor's clip of the same moment, you re-cut before posting.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANES -->
+  <section aria-labelledby="lanes-h">
+    <div class="kicker">Why the supply holds</div>
+    <h2 id="lanes-h">Two lanes feed the desk. You work both.</h2>
+    <p class="sub">A network that lives on one client's season starves its editors between campaigns. This one does not.</p>
+    <div class="lanes">
+      <div class="lane"><h3>Lane 1 — Game Phace Ent's own shows</h3><ul><li>Podcast and long-form conversations</li><li>New World Briefing rooms</li><li>Teaching and lectures</li><li>A back catalogue that keeps yielding moments</li></ul></div>
+      <div class="plus" aria-hidden="true">+</div>
+      <div class="lane"><h3>Lane 2 — Client campaigns</h3><ul><li>Clients taken in only under a written rights grant</li><li>Their long-form, clipped under the same briefs and rules</li><li>New clients add supply without diluting your angle</li><li>Model rules are not variable by a client's instruction</li></ul></div>
+    </div>
+    <div class="lane-out">Same briefs &nbsp;·&nbsp; Same verification &nbsp;·&nbsp; Same weekly ledger &nbsp;·&nbsp; More weeks with work in them</div>
+  </section>
+
+  <!-- FOR CLIENTS -->
+  <section aria-labelledby="client-h">
+    <div class="kicker">For clients commissioning clips — Lane 2</div>
+    <h2 id="client-h">What a client receives from the same desk</h2>
+    <p class="sub">Clients do not buy reposts. They commission original clips, made by different editors, from their own real accounts — and they pay against the same evidence editors are paid on. Clipping Desk is run by Game Phace Ent.</p>
+    <div class="counts">
+      <div class="count-box"><h3>What you get</h3><ul><li><strong>Original clips across the editor network</strong> — each editor holds a different brief and a different angle on your source, so your content travels as many distinct clips, never as copies</li><li><strong>Verified-view reporting</strong> — counts read at 48 hours and 7 days from the posted links, clip by clip, in the campaign tally</li><li><strong>Cost per 1,000 verified views</strong> — computed in the weekly ledger from verified payable views, so you can judge the campaign on evidence</li><li><strong>Rights first</strong> — your content is clipped only under your written grant, recorded before the first brief is issued</li></ul></div>
+      <div class="count-box"><h3>The rule no instruction can change</h3><ul><li>The model rules are <strong>not variable by instruction</strong> — a client instruction to repost identically is an instruction of no effect</li><li>Own accounts only, original edits only, paid work disclosed as paid work — on client campaigns exactly as on Game Phace Ent's own shows</li><li>Nothing is clipped out of context; a moment that cannot be cut honestly is not cut</li><li>Your budget band is asked at intake — pricing is set for your campaign, never quoted from another client's</li></ul></div>
+    </div>
+    <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
+      <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfiW5c_EV2jHQ47dUQDa7t0aVep1M8ZFbe9GU9LMuI1YLchOQ/viewform" target="_blank" rel="noopener">Start client intake →</a>
+    </div>
+  </section>
+
+  <!-- TIERS -->
+  <section aria-labelledby="tier-h">
+    <div class="kicker">Where you can go</div>
+    <h2 id="tier-h">Tiered on acceptance. Moved by your record.</h2>
+    <p class="sub">You are tiered when you are accepted — on account standing and reliability — and your tier is the rate you are paid at. Originality, on-time posting, and verified performance are what move you. The card below is the settled card for the pilot.</p>
+    <div class="road">
+      <div class="road-card"><span class="tag">Tier 1 · $0.20 / 1,000</span><h3>Entry — $0.20</h3><p>Where every accepted editor starts. <strong>$0.20 per 1,000 verified views.</strong></p><ul><li>Briefs matched to your declared capacity</li><li>Your first verified weeks build your record</li><li>Paid per verified view at the Entry rate of $0.20</li></ul></div>
+      <div class="road-card featured"><span class="tag">Tier 2 · $0.25 / 1,000</span><h3>Established — $0.25</h3><p>For editors whose record is proven. <strong>$0.25 per 1,000 verified views.</strong></p><ul><li>Reliable windows, original cuts, clean checks</li><li>More briefs, across both lanes</li><li>Paid per verified view at the Established rate of $0.25</li></ul></div>
+      <div class="road-card"><span class="tag">Tier 3 · $0.35 / 1,000</span><h3>Anchor — $0.35</h3><p>The editors the desk leans on. <strong>$0.35 per 1,000 verified views.</strong></p><ul><li>First call on the strongest sources</li><li>Standing and reliability proven over time</li><li>Paid per verified view at the Anchor rate of $0.35</li></ul></div>
+    </div>
+  </section>
+
+  <!-- VERIFICATION -->
+  <section aria-labelledby="count-h">
+    <div class="kicker">Plain dealing</div>
+    <h2 id="count-h">What counts — and what does not</h2>
+    <p class="sub">The same rules that keep pay honest are the rules that keep your earnings defensible. Nothing here is discovered later, at your expense.</p>
+    <div class="counts">
+      <div class="count-box"><h3><span class="dot" style="background:var(--green)"></span>Counts toward your pay</h3><ul><li>Views read from your post link at the <strong>7-day checkpoint</strong> — that is the payable count</li><li>Original edits, posted from your own declared account, inside the brief's window</li><li>Clips that pass the duplicate hash-check as <strong>Clear</strong></li><li>Every verified clip, entered as its own line in the weekly ledger</li></ul></div>
+      <div class="count-box"><h3><span class="dot" style="background:var(--red)"></span>Never counts — no exceptions</h3><ul><li><strong>Identical reposting</strong> — a duplicate file is automatic non-payment, and one breach of the originality rule ends the engagement</li><li>Purchased views, purchased engagement, or patterns no organic post produces</li><li>Work from bought, farmed, or borrowed accounts — not eligible, ever</li><li>A moment clipped out of context, or a brief with no rights record behind it</li></ul></div>
+    </div>
+    <div style="margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center">
+      <p style="margin:0;max-width:62ch"><strong>Your part is deliberately small:</strong> cut it, post it, submit the link the same day. The desk does the counting, the duplicate check, and the ledger.</p>
+      <span class="tag">Automation does the admin</span>
+    </div>
+  </section>
+
+  <!-- APPLY + FAQ -->
+  <section id="apply" aria-labelledby="apply-h">
+    <div class="two">
+      <div>
+        <div class="kicker">Before you apply</div>
+        <h2 id="apply-h">Have these ready</h2>
+        <p class="sub" style="margin-bottom:18px">Applications are reviewed in order by Game Phace Ent, and the first cohort is small by design. Payout details are never asked for on the application — those are arranged privately, only after acceptance.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+          <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSf4E6KTHXENUFCFg2ZTAKdNjy4Zlw200z-vJzVlzHeVTRrSHA/viewform" target="_blank" rel="noopener">Open the editor application →</a>
+          <a class="btn ghost" href="https://docs.google.com/forms/d/e/1FAIpQLSfiW5c_EV2jHQ47dUQDa7t0aVep1M8ZFbe9GU9LMuI1YLchOQ/viewform" target="_blank" rel="noopener">Client intake</a>
+        </div>
+        <ul class="check">
+          <li><span class="box"></span><p><strong>Your own handles + follower counts</strong><span>Instagram, Threads, TikTok, YouTube, and X — the accounts you will actually post from.</span></p></li>
+          <li><span class="box"></span><p><strong>Two sample clips of your own editing</strong><span>From your own accounts. They are how your craft — and your tier — are judged.</span></p></li>
+          <li><span class="box"></span><p><strong>The content you edit best + your tools</strong><span>The niches you cut well, and the editing tools you work in.</span></p></li>
+          <li><span class="box"></span><p><strong>Your honest weekly capacity</strong><span>How many clips a week you can truly deliver, inside their windows.</span></p></li>
+          <li><span class="box"></span><p><strong>The declarations, ticked in full</strong><span>Own accounts only · every clip an original edit · identical reposting ends the engagement without payment · brief and disclosure compliance · pay per verified view, released on approval.</span></p></li>
+        </ul>
+      </div>
+      <div>
+        <div class="kicker">Straight answers</div>
+        <h2>Questions editors ask</h2>
+        <div style="height:10px"></div>
+        <details><summary>Do I need a big account to be accepted?</summary><div class="ans"><p>No follower minimum is stated in the pilot terms. You are judged on your sample clips, your account standing, and your reliability — and tiered on acceptance on that basis. A real account with real cuts is the requirement; bought or farmed accounts are excluded outright.</p></div></details>
+        <details><summary>Can I clip content from outside the desk?</summary><div class="ans"><p>Not for this desk. You work only from briefs, and a brief is issued only when a written rights record covers the source — Game Phace Ent's own content, or a client's content under their grant. No rights record, no clipping.</p></div></details>
+        <details><summary>What if another editor clips the same moment?</summary><div class="ans"><p>That is expected — and designed for. Each editor on the same source receives a different brief with a different reserved angle, so fifty clips of one moment are fifty different clips. If your edit converges on another editor's published clip, you re-cut before posting.</p></div></details>
+        <details><summary>When and how do I get paid?</summary><div class="ans"><p>Weekly, from the ledger. Views are read at 48 hours and 7 days; the 7-day verified count is payable at your tier's settled rate — Entry $0.20, Established $0.25, Anchor $0.35 per 1,000 verified views. No payout moves without Game Phace Ent's approval of that week's ledger — that approval step is by design, and it is what makes the ledger the single, checkable record of what you are owed.</p></div></details>
+        <details><summary>What is the pilot budget cap?</summary><div class="ans"><p>The pilot runs under a fixed budget cap of $500 for the 30-day pilot period, covering editor payouts across Game Phace Ent's own content and client trials combined. Briefs are issued within that cap, so work is not assigned beyond what the pilot funds. When the cap is reached, new briefs pause until the next period or a revised cap is set.</p></div></details>
+        <details><summary>What are the settled rates?</summary><div class="ans"><p>Per 1,000 verified views: Entry (Tier 1) $0.20, Established (Tier 2) $0.25, Anchor (Tier 3) $0.35. You are paid at the tier you hold when the clip verifies, on the 7-day count.</p></div></details>
+        <details><summary>Do I have to disclose that it is paid work?</summary><div class="ans"><p>Yes — always, in the platform's required form. The brief carries the exact disclosure wording for each clip. Paid work disclosed as paid work is a standing rule, not a per-clip choice.</p></div></details>
+        <details><summary>What ends the engagement?</summary><div class="ans"><p>One thing ends it immediately, with no warning and no cure: a breach of the originality rule — an identical repost. Bought or farmed accounts are never eligible in the first place. Everything else is governed by the editor agreement you sign on acceptance.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="final">
+    <div class="kicker" style="color:var(--gold-bright)">If this is how you already work · Game Phace Ent</div>
+    <h2>This network will feel like the version of the business that was built properly.</h2>
+    <p>Real accounts. Original edits. Briefs that respect your craft, counts you never have to argue for, and a ledger that proves every payment — at Entry $0.20, Established $0.25, and Anchor $0.35 per 1,000 verified views. That is the whole offer — and it is why the work is worth doing here.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf4E6KTHXENUFCFg2ZTAKdNjy4Zlw200z-vJzVlzHeVTRrSHA/viewform" target="_blank" rel="noopener">Apply as an editor →</a>
+      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfiW5c_EV2jHQ47dUQDa7t0aVep1M8ZFbe9GU9LMuI1YLchOQ/viewform" target="_blank" rel="noopener" style="background:transparent;color:var(--bg);border-color:var(--bg)">Commission clips — client intake</a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">Clipping Desk — Editor Information · Run by Game Phace Ent. Prepared for prospective editors and working clippers considering the pilot. Settled rate card per 1,000 verified views: Entry $0.20 · Established $0.25 · Anchor $0.35. Pilot budget cap: $500 for the 30-day pilot. Applications are reviewed in order via the live editor application form; client campaigns begin via the live client intake form.</div>
+</footer>
+
+<script>
+(function(){
+  var views=document.getElementById('views'), clips=document.getElementById('clips'), rate=document.getElementById('rate');
+  function fmt(n){ return n.toLocaleString('en-US'); }
+  function money(n){ return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function calc(){
+    var v=+views.value, c=+clips.value, r=parseFloat(rate.value);
+    document.getElementById('viewsOut').textContent=fmt(v);
+    document.getElementById('clipsOut').textContent=c+(c===1?' clip':' clips');
+    document.getElementById('lineViews').textContent=fmt(v);
+    document.getElementById('lineTotalViews').textContent=fmt(v*c);
+    if(!r || r<=0){
+      document.getElementById('rateOut').textContent='not set';
+      document.getElementById('weekPay').textContent='—';
+      document.getElementById('weekPayNote').textContent='Enter a rate to see the example — Entry is $0.20 per 1,000 verified views.';
+      document.getElementById('lineK').textContent=fmt(v/1000)+' × your rate';
+      document.getElementById('linePerClip').textContent='—';
+      document.getElementById('lineMonth').textContent='—';
+      return;
+    }
+    var tierLabel = (Math.abs(r-0.20)<0.001) ? ' — Entry (Tier 1)' : (Math.abs(r-0.25)<0.001) ? ' — Established (Tier 2)' : (Math.abs(r-0.35)<0.001) ? ' — Anchor (Tier 3)' : ' — custom rate';
+    document.getElementById('rateOut').textContent='$'+r.toFixed(2)+tierLabel;
+    var perClip=(v/1000)*r, week=perClip*c;
+    document.getElementById('weekPay').textContent=money(week);
+    document.getElementById('weekPayNote').textContent='per week at $'+r.toFixed(2)+' per 1,000 verified views'+tierLabel+' — if every clip verifies at that average';
+    document.getElementById('lineK').textContent=fmt(v/1000)+' × '+money(r);
+    document.getElementById('linePerClip').textContent=money(perClip);
+    document.getElementById('lineMonth').textContent=money(week*4);
+  }
+  [views,clips,rate].forEach(function(el){ el.addEventListener('input',calc); });
+  calc();
+
+  var steps=[
+    {when:'DAY 0', title:'Everything you need is in one brief', body:'Source and link, the exact timestamp range, the hook line, required caption elements and disclosure, the call-to-action keyword, platform and format, and your posting window. One section names what makes your clip distinct — the angle reserved to you alone on that source.'},
+    {when:'YOUR CUT', title:'The brief sets the moment. You set the edit.', body:'Pacing, framing, caption voice — yours. Reference clips set the quality bar, never a template to copy. Nothing is clipped out of context: if a moment cannot be cut honestly, the brief comes back unworked, and that is the correct outcome.'},
+    {when:'SAME DAY', title:'Post from your own account. Submit the link.', body:'You post from the declared account named in the brief, inside the window — then return the public post URL the same day. That link is the only submission you ever make. No screenshots, no count reports.'},
+    {when:'48 HOURS', title:'The desk reads the first count', body:'At 48 hours the desk reads your views from the platform, from your link. This is the early signal and the anomaly check — you do nothing, and you chase no one. The row sits in the tally as pending.'},
+    {when:'7 DAYS', title:'The payable count is fixed', body:'At 7 days the desk reads the count again. That figure — less anything excluded under the verification rules, with duplicates hash-checked clear — becomes your verified payable views for that clip.'},
+    {when:'WEEKLY', title:'One ledger. Checked by you. Paid on approval.', body:'Every clip lands as its own line in the weekly ledger: verified views, your tier, amount due. Check it against your own links, line by line. On Game Phace Ent\u2019s approval of that ledger, payouts are released.'}
+  ];
+  var jWhen=document.getElementById('jWhen'), jTitle=document.getElementById('jTitle'), jBody=document.getElementById('jBody');
+  document.querySelectorAll('.jbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.jbtn').forEach(function(x){x.setAttribute('aria-pressed','false');});
+      b.setAttribute('aria-pressed','true');
+      var s=steps[+b.getAttribute('data-step')];
+      jWhen.textContent=s.when; jTitle.innerHTML=s.title; jBody.innerHTML=s.body;
+    });
+  });
+})();
+</script>
+</body>
+</html>
